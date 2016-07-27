@@ -23,9 +23,7 @@ with open('config.json') as config:
     ignore = {name.lower() for name in config['ignore']}
 
 with open('pokemon.en.json') as pokemon_names_file:
-    pokemon_names = {
-        int(k): v for k, v in json.load(pokemon_names_file).items()
-    }
+    pokemon_names = json.load(pokemon_names_file)
 
 
 def time_left(ms):
@@ -52,10 +50,13 @@ def fullmap():
     return flask.render_template(
         'map.html',
         key=GOOGLEMAPS_KEY,
-        auto_refresh=auto_refresh_interval,
-        origin_lat=origin_lat,
-        origin_lng=origin_lng,
-        zoom=zoom,
+        js_globals={
+            'auto_refresh': auto_refresh_interval * 1000,
+            'origin_lat': origin_lat,
+            'origin_lng': origin_lng,
+            'pokemon': pokemon_names,
+            'zoom': zoom,
+        },
         # Mobile browsers cache forever, let's at least give them a hint about
         # the timestamp
         css_timestamp=os.stat('static/css/main.css').st_mtime,
