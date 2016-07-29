@@ -10,4 +10,10 @@
     "auto_refresh": 10,
     "zoom": 15,
     "ignore": ["zubat"]
+    "twilio_info": {
+        "auth_token": "twilio auth token",
+        "account_sid": "twilio account sid",
+        "to_number": "personal phone number",
+        "from_number": "twilio phone number",
+        "notify": ["mewtwo"]
 }

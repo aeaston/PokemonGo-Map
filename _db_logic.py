@@ -2,6 +2,10 @@ import collections
 import sqlite3
 
 
+# How many seconds is considered recent
+RECENT_IN_SECONDS = 10
+
+
 class Table(collections.namedtuple('Table', ('name', 'key', 'keysize'))):
     __slots__ = ()
 
@@ -34,6 +38,13 @@ class Table(collections.namedtuple('Table', ('name', 'key', 'keysize'))):
         return db.execute(
             'SELECT * FROM {} WHERE expires_at_ms > ?'.format(self.name),
             (current_time_ms,)
+        ).fetchall()
+
+    def select_recently_expired(self, db, current_time_ms):
+        return db.execute(
+            'SELECT * FROM {} '
+            'WHERE expires_at_ms < ? AND expires_at_ms > ?'.format(self.name),
+            (current_time_ms, current_time_ms - (RECENT_IN_SECONDS * 1000),)
         ).fetchall()
 
 
